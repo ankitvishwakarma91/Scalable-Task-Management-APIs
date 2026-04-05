@@ -8,16 +8,17 @@ import com.softworkshub.internassignment.entity.Users;
 import com.softworkshub.internassignment.exception.NoTaskFound;
 import com.softworkshub.internassignment.repository.TaskRepository;
 import com.softworkshub.internassignment.repository.UserRepository;
+import com.softworkshub.internassignment.util.TaskStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 
 
-@Service
+@Component
 @Slf4j
 public class TaskService {
 
@@ -40,8 +41,8 @@ public class TaskService {
         Task task = Task.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
-                .status(taskRequest.getStatus() != null ? taskRequest.getStatus() : "TODO")
-                .user(user).build();
+                .status(taskRequest.getStatus() != null ? taskRequest.getStatus() : TaskStatus.TODO)
+                .userId(user.getId()).build();
 
         Task save = taskRepository.save(task);
 
@@ -59,7 +60,7 @@ public class TaskService {
     public List<TaskResponse> getAllTasks() {
         Users user = getCurrentUser();
 
-        List<TaskResponse> tasks = taskRepository.findAllByUserEmail(user.getEmail());
+        List<Task> tasks = taskRepository.findAllByUserId(user.getId());
         if (tasks.isEmpty()) {
             throw new NoTaskFound("Nothing to show");
         }
@@ -68,20 +69,20 @@ public class TaskService {
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus())
-                .userEmail(task.getUserEmail())
+                .userEmail(user.getEmail())
                 .createdAt(task.getCreatedAt())
                 .build())
                 .toList();
     }
 
     // Get By Task Id
-    public TaskResponse getTaskById(Long taskId) {
+    public TaskResponse getTaskById(String taskId) {
         Users user = getCurrentUser();
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NoTaskFound("Task not found"));
 
-        if (!task.getUser().getId().equals(user.getId())) {
+        if (!task.getUserId().equals(user.getId())) {
             throw new RuntimeException("You cannot access this task");
         }
 
@@ -89,13 +90,13 @@ public class TaskService {
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus())
-                .userEmail(task.getUser().getEmail())
+                .userEmail(user.getEmail())
                 .createdAt(task.getCreatedAt())
                 .build();
     }
 
     // Update Task by id
-    public TaskResponse updateTask(Long taskId, TaskRequest request) {
+    public TaskResponse updateTask(String taskId, TaskRequest request) {
 
         Users user = getCurrentUser();
 
@@ -103,7 +104,7 @@ public class TaskService {
                 .orElseThrow(() -> new NoTaskFound("Task not found"));
 
         // check ownership
-        if (!task.getUser().getId().equals(user.getId())) {
+        if (!task.getUserId().equals(user.getId())) {
             throw new RuntimeException("You cannot update this task");
         }
 
@@ -120,26 +121,26 @@ public class TaskService {
         }
 
         Task updated = taskRepository.save(task);
-
+//        String getId = updated.getId();
         return TaskResponse.builder()
                 .id(updated.getId())
                 .title(updated.getTitle())
                 .description(updated.getDescription())
                 .status(updated.getStatus())
-                .userEmail(updated.getUser().getEmail())
+                .userEmail(user.getEmail())
                 .createdAt(updated.getCreatedAt())
                 .build();
     }
 
     // delete task by id (Only user can delete)
-    public void deleteTaskById(Long taskId) {
+    public void deleteTaskById(String taskId) {
 
         Users user = getCurrentUser();
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NoTaskFound("Task not found"));
 
-        if (!task.getUser().getId().equals(user.getId())) {
+        if (!task.getUserId().equals(user.getId())) {
             throw new RuntimeException("You cannot delete this task");
         }
 
@@ -150,7 +151,7 @@ public class TaskService {
     public void deleteAllTasksByUser() {
         Users user = getCurrentUser();
 
-        List<Task> tasks = taskRepository.findAllByUser(user.getEmail());
+        List<Task> tasks = taskRepository.findAllByUserId(user.getId());
 
         taskRepository.deleteAll(tasks);
     }
@@ -171,7 +172,7 @@ public class TaskService {
                         .title(task.getTitle())
                         .description(task.getDescription())
                         .status(task.getStatus())
-                        .userEmail(task.getUser().getEmail())
+                        .userEmail(user.getEmail())
                         .createdAt(task.getCreatedAt())
                         .build())
                 .toList();
@@ -179,7 +180,7 @@ public class TaskService {
 
 
     // Delete Task By Admin
-    public void deleteTaskByIdAdmin(Long taskId) {
+    public void deleteTaskByIdAdmin(String taskId) {
 
         Users user = getCurrentUser();
 

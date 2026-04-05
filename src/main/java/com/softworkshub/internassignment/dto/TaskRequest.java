@@ -1,5 +1,6 @@
 package com.softworkshub.internassignment.dto;
 
+import com.softworkshub.internassignment.util.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -12,5 +13,5 @@ public class TaskRequest {
     private String description;
 
     @NotBlank
-    private String status;
+    private TaskStatus status;
 }

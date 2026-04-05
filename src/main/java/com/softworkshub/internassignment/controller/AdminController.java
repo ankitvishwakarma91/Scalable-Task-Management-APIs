@@ -57,7 +57,7 @@ public class AdminController {
     @ApiResponse(responseCode = "200", description = "Task deleted successfully")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping("/tasks/{id}")
-    public ResponseEntity<?> deleteTaskByIdAdmin(@PathVariable(name = "id") Long taskId) {
+    public ResponseEntity<?> deleteTaskByIdAdmin(@PathVariable(name = "id") String taskId) {
         taskService.deleteTaskByIdAdmin(taskId);
         return ResponseEntity.ok().build();
     }

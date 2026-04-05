@@ -52,7 +52,7 @@ public class TaskController {
     @ApiResponse(responseCode = "200", description = "Task fetched successfully")
     @ApiResponse(responseCode = "404", description = "Task not found")
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTaskById(@RequestParam Long id) {
+    public ResponseEntity<TaskResponse> getTaskById(@RequestParam String id) {
         return ResponseEntity.ok().body(taskService.getTaskById(id));
     }
 
@@ -63,7 +63,7 @@ public class TaskController {
     @ApiResponse(responseCode = "202", description = "Task updated successfully")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable(name = "id") Long taskId, @RequestBody TaskRequest taskRequest) {
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable(name = "id") String taskId, @RequestBody TaskRequest taskRequest) {
         return ResponseEntity.accepted().body(taskService.updateTask(taskId,taskRequest));
     }
 
@@ -74,7 +74,7 @@ public class TaskController {
     @ApiResponse(responseCode = "200", description = "Task deleted successfully")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTaskById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTaskById(@PathVariable String id) {
         taskService.deleteTaskById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

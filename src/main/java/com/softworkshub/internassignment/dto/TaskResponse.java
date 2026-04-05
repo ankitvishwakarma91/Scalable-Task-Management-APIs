@@ -1,5 +1,6 @@
 package com.softworkshub.internassignment.dto;
 
+import com.softworkshub.internassignment.util.TaskStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,10 +12,10 @@ import java.time.LocalDateTime;
 @Setter
 public class TaskResponse {
 
-    private Long id;
+    private String id;
     private String title;
     private String description;
-    private String status;
+    private TaskStatus status;
     private String userEmail;
     private LocalDateTime createdAt;
 }
