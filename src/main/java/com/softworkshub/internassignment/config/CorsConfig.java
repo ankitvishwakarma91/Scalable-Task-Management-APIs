@@ -17,8 +17,7 @@ public class CorsConfig {
                                 "http://localhost:5500",
                                 "http://localhost:3000",
                                 "http://localhost:4200",
-                                "https://assignment-frontend-h9zbdug-ankitvishwakarma913s-projects.vercel.app",
-                                "*"
+                                "https://assignment-frontend-h9zbdug-ankitvishwakarma913s-projects.vercel.app"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
