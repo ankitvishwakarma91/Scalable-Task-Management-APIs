@@ -52,7 +52,7 @@ public class TaskController {
     @ApiResponse(responseCode = "200", description = "Task fetched successfully")
     @ApiResponse(responseCode = "404", description = "Task not found")
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTaskById(@RequestParam String id) {
+    public ResponseEntity<TaskResponse> getTaskById(@PathVariable String id) {
         return ResponseEntity.ok().body(taskService.getTaskById(id));
     }
 
