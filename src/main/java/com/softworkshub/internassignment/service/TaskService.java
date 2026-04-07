@@ -41,7 +41,7 @@ public class TaskService {
         Task task = Task.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
-                .status(taskRequest.getStatus() != null ? taskRequest.getStatus() : TaskStatus.TODO)
+                .status(taskRequest.getStatus() != null ? taskRequest.getStatus() : TaskStatus.PENDING)
                 .userId(user.getId()).build();
 
         Task save = taskRepository.save(task);
